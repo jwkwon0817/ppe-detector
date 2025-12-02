@@ -130,7 +130,7 @@ export async function POST(request: NextRequest) {
 
     // 동시 요청 수 제한
     if (activeRequests >= MAX_CONCURRENT_REQUESTS) {
-      return new Promise((resolve) => {
+      return new Promise<NextResponse>((resolve) => {
         requestQueue.push(() => {
           processRequest(pythonCmd, pythonScript, modelPath, tempFilePath)
             .then(resolve);
