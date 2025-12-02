@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { startTransition, useCallback, useEffect, useRef, useState } from 'react';
 import { Detection } from '../types';
 
 export const useDetection = (
@@ -34,7 +34,6 @@ export const useDetection = (
       return;
     }
 
-    // 최소 감지 간격 체크 (300ms)
     const now = Date.now();
     const timeSinceLastDetection = now - lastDetectionTimeRef.current;
     if (timeSinceLastDetection < 300) {
@@ -46,15 +45,12 @@ export const useDetection = (
       return;
     }
 
-    // 이전 요청 취소
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
     }
 
-    // 새로운 AbortController 생성
     abortControllerRef.current = new AbortController();
 
-    // 임시 캔버스에 현재 프레임 그리기
     const tempCanvas = document.createElement('canvas');
     tempCanvas.width = video.videoWidth;
     tempCanvas.height = video.videoHeight;
@@ -117,25 +113,30 @@ export const useDetection = (
         });
       }
     }, 'image/jpeg', 0.85);
-  }, []);
+  }, [videoRef, canvasRef]);
 
-  // detectFrame ref 업데이트
   useEffect(() => {
     detectFrameRef.current = detectFrame;
   }, [detectFrame]);
 
-  // 감지 루프
   useEffect(() => {
     isDetectingRef.current = isDetecting;
     
     if (isDetecting && isStreaming) {
-      setIsDetectingLoading(true);
+      startTransition(() => {
+        setIsDetectingLoading(true);
+      });
       lastDetectionTimeRef.current = 0;
       detectFrame();
-      // 첫 감지 결과가 나오면 로딩 해제
-      setTimeout(() => setIsDetectingLoading(false), 500);
+      setTimeout(() => {
+        startTransition(() => {
+          setIsDetectingLoading(false);
+        });
+      }, 500);
     } else {
-      setIsDetectingLoading(false);
+      startTransition(() => {
+        setIsDetectingLoading(false);
+      });
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
         abortControllerRef.current = null;
