@@ -3,15 +3,16 @@ nixPkgs = ["nodejs-20_x", "python39", "pip"]
 
 [phases.install]
 cmds = [
-  "npm install",
+  "corepack enable",
+  "pnpm install",
   "pip3 install -r requirements.txt"
 ]
 
 [phases.build]
 cmds = [
-  "npm run build"
+  "pnpm run build"
 ]
 
 [start]
-cmd = "npm start"
+cmd = "pnpm start"
 

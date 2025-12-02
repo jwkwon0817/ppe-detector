@@ -1,8 +1,8 @@
 [build]
-build = "npm install && pip3 install -r requirements.txt && npm run build"
+build = "corepack enable && pnpm install && pip3 install -r requirements.txt && pnpm run build"
 
 [start]
-start = "npm start"
+start = "pnpm start"
 
 [env]
 NODE_ENV = "production"
