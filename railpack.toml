@@ -1,4 +1,12 @@
+# Railpack 설정
+# Node.js와 Python을 함께 사용하기 위한 설정
+
+[install]
+# Node.js 설치 (mise를 통해)
+node = "20"
+
 [build]
+# Node.js가 설치된 후 corepack 활성화 및 빌드
 build = "corepack enable && pnpm install && pip3 install -r requirements.txt && pnpm run build"
 
 [start]

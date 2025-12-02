@@ -1,0 +1,50 @@
+# Dependencies
+node_modules
+.pnp
+.pnp.*
+.venv
+venv
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+
+# Testing
+coverage
+*.log
+
+# Next.js
+.next
+out
+.vercel
+
+# Production
+build
+dist
+
+# Misc
+.DS_Store
+*.pem
+.env*.local
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# Railway
+.railway
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Documentation
+*.md
+!README.md
+
