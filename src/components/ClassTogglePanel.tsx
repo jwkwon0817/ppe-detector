@@ -14,7 +14,7 @@ export default function ClassTogglePanel({
   const enabledCount = Object.values(enabledClasses).filter(Boolean).length;
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-5">
+    <div className="bg-white rounded-lg border border-gray-200 p-5">
       <h2 className="text-xl font-bold text-gray-800 mb-4">
         감지 클래스 설정
       </h2>
@@ -23,9 +23,9 @@ export default function ClassTogglePanel({
           <button
             key={className}
             onClick={() => onToggleClass(className)}
-            className={`w-full text-left px-4 py-2 rounded-lg transition font-medium cursor-pointer ${
+            className={`w-full text-left px-4 py-2 rounded-lg transition font-medium cursor-pointer border border-gray-200 ${
               enabledClasses[className]
-                ? 'bg-gray-800 text-gray-100 shadow-md'
+                ? 'bg-gray-800 text-gray-100'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
           >

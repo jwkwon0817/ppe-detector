@@ -17,7 +17,7 @@ export function Skeleton({ className = '', width, height }: SkeletonProps) {
 
 export function VideoSkeleton() {
   return (
-    <div className="bg-white rounded-lg shadow-lg p-4">
+    <div className="bg-white rounded-lg border border-gray-200 p-4">
       <div className="relative bg-gray-900 rounded-lg overflow-hidden aspect-video">
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="flex flex-col items-center gap-4">
@@ -40,7 +40,7 @@ export function ButtonSkeleton() {
 
 export function PanelSkeleton() {
   return (
-    <div className="bg-white rounded-lg shadow-lg p-5">
+    <div className="bg-white rounded-lg border border-gray-200 p-5">
       <Skeleton className="h-7 w-40 mb-4" />
       <div className="space-y-2">
         {Array.from({ length: 5 }).map((_, idx) => (

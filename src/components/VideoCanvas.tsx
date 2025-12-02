@@ -116,8 +116,7 @@ export default function VideoCanvas({
   }, [isStreaming]);
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-4">
-      {/* 비디오 요소는 항상 렌더링 (ref 연결을 위해) - 화면 밖으로 이동하여 숨김 */}
+    <div className="bg-white rounded-lg border border-gray-200 p-4">
       <video
         ref={videoRef}
         autoPlay

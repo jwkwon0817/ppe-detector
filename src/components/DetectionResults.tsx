@@ -17,7 +17,7 @@ export default function DetectionResults({
   if (filteredDetections.length === 0) return null;
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-5">
+    <div className="bg-white rounded-lg border border-gray-200 p-5">
       <h2 className="text-xl font-bold text-gray-800 mb-4">
         감지 결과
       </h2>
