@@ -6,6 +6,26 @@ import { filterEnabledDetections, getKoreanLabel } from './utils';
 
 import { VideoSkeleton } from './Skeleton';
 
+const CLASS_COLORS: Record<string, string> = {
+  helmet: '#3B82F6',
+  gloves: '#10B981',    // Emerald 500
+  vest: '#8B5CF6',      // Violet 500
+  boots: '#06B6D4',     // Cyan 500
+  goggles: '#6366F1',   // Indigo 500
+  
+  // 미착용 (위험 - Red/Orange 계열)
+  no_helmet: '#EF4444', // Red 500
+  no_goggle: '#F97316', // Orange 500
+  no_gloves: '#F59E0B', // Amber 500
+  no_boots: '#EC4899',  // Pink 500
+  
+  // 기타
+  Person: '#94A3B8',    // Slate 400
+  none: '#CBD5E1',      // Slate 300
+};
+
+const DEFAULT_COLOR = '#64748B'; // Slate 500
+
 interface VideoCanvasProps {
   videoRef: React.RefObject<HTMLVideoElement | null>;
   canvasRef: React.RefObject<HTMLCanvasElement | null>;
@@ -67,24 +87,62 @@ export default function VideoCanvas({
       filteredDetections.forEach((det) => {
         const { bbox, class: className, confidence } = det;
         const koreanLabel = getKoreanLabel(className);
+        const color = CLASS_COLORS[className] || DEFAULT_COLOR;
         
-        // 바운딩 박스 그리기 (grayscale 톤 - 어두운 회색)
-        ctx.strokeStyle = '#404040';
-        ctx.lineWidth = 3;
-        ctx.strokeRect(bbox.x1, bbox.y1, bbox.x2 - bbox.x1, bbox.y2 - bbox.y1);
+        const x = bbox.x1;
+        const y = bbox.y1;
+        const w = bbox.x2 - bbox.x1;
+        const h = bbox.y2 - bbox.y1;
 
-        // 라벨 배경 그리기
-        ctx.fillStyle = '#2a2a2a';
-        ctx.font = 'bold 16px Arial';
-        const label = `${koreanLabel} ${(confidence * 100).toFixed(1)}%`;
+        // 1. 바운딩 박스 그리기
+        ctx.beginPath();
+        if (typeof ctx.roundRect === 'function') {
+          ctx.roundRect(x, y, w, h, 8);
+        } else {
+          ctx.rect(x, y, w, h);
+        }
+        
+        // 박스 내부 채우기 (투명도 10%)
+        ctx.fillStyle = `${color}1A`; 
+        ctx.fill();
+        
+        // 박스 테두리
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+
+        // 2. 라벨 그리기
+        const label = `${koreanLabel} ${(confidence * 100).toFixed(0)}%`;
+        
+        // 폰트 설정
+        ctx.font = '600 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
         const textMetrics = ctx.measureText(label);
-        const labelHeight = 22;
-        const labelY = Math.max(bbox.y1, labelHeight);
-        ctx.fillRect(bbox.x1, labelY - labelHeight, textMetrics.width + 12, labelHeight);
+        
+        const textPaddingX = 8;
+        const textWidth = textMetrics.width;
+        const labelHeight = 24;
+        
+        // 라벨 위치 계산 (박스 왼쪽 상단, 공간 없으면 안쪽으로)
+        const labelX = x;
+        let labelY = y - labelHeight - 4;
+        if (labelY < 0) {
+          labelY = y + 4;
+        }
 
+        // 라벨 배경 그리기 (둥근 모서리)
+        ctx.beginPath();
+        if (typeof ctx.roundRect === 'function') {
+          ctx.roundRect(labelX, labelY, textWidth + (textPaddingX * 2), labelHeight, 6);
+        } else {
+          ctx.rect(labelX, labelY, textWidth + (textPaddingX * 2), labelHeight);
+        }
+        ctx.fillStyle = color;
+        ctx.fill();
+        
         // 라벨 텍스트 그리기
-        ctx.fillStyle = '#e5e5e5';
-        ctx.fillText(label, bbox.x1 + 6, labelY - 5);
+        ctx.fillStyle = '#FFFFFF';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(label, labelX + textPaddingX, labelY + (labelHeight / 2) + 1);
       });
       
       ctx.restore();
