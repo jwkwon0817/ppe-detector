@@ -1,0 +1,10 @@
+[build]
+build = "npm install && pip3 install -r requirements.txt && npm run build"
+
+[start]
+start = "npm start"
+
+[env]
+NODE_ENV = "production"
+PYTHONUNBUFFERED = "1"
+
