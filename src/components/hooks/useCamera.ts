@@ -21,7 +21,6 @@ export const useCamera = () => {
         }
       });
       
-      // 비디오 요소가 준비될 때까지 대기 (최대 1초)
       let retries = 0;
       const maxRetries = 10;
       while (!videoRef.current && retries < maxRetries) {
@@ -36,14 +35,12 @@ export const useCamera = () => {
         const video = videoRef.current;
         let resolved = false;
         
-        // 이미 메타데이터가 로드된 경우
         if (video.readyState >= video.HAVE_METADATA) {
           setIsStreaming(true);
           setIsLoading(false);
           return;
         }
 
-        // 메타데이터 로드 대기
         const onLoadedMetadata = () => {
           if (!resolved) {
             resolved = true;
@@ -55,7 +52,6 @@ export const useCamera = () => {
 
         video.addEventListener('loadedmetadata', onLoadedMetadata);
         
-        // 타임아웃 보호 (3초 후 강제로 시작)
         setTimeout(() => {
           if (!resolved) {
             resolved = true;
@@ -67,7 +63,6 @@ export const useCamera = () => {
       } else {
         setError('비디오 요소를 찾을 수 없습니다. 페이지를 새로고침해주세요.');
         setIsLoading(false);
-        // 스트림 정리
         stream.getTracks().forEach(track => track.stop());
       }
     } catch (err) {
@@ -75,7 +70,6 @@ export const useCamera = () => {
       setIsStreaming(false);
       setIsLoading(false);
       
-      // 스트림 정리
       if (streamRef.current) {
         streamRef.current.getTracks().forEach(track => track.stop());
         streamRef.current = null;

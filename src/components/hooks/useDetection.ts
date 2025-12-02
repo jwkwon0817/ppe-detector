@@ -66,7 +66,6 @@ export const useDetection = (
 
     tempCtx.drawImage(video, 0, 0, tempCanvas.width, tempCanvas.height);
 
-    // 이미지를 Blob으로 변환
     tempCanvas.toBlob(async (blob) => {
       if (!blob || !isDetectingRef.current) return;
 
@@ -104,7 +103,6 @@ export const useDetection = (
         }
       }
 
-      // 다음 프레임 감지
       if (isDetectingRef.current) {
         requestAnimationFrame(() => {
           if (isDetectingRef.current) {

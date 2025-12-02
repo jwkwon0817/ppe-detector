@@ -13,7 +13,6 @@ import VideoCanvas from './VideoCanvas';
 export default function PPEDetector() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   
-  // 카메라 훅
   const {
     videoRef,
     isStreaming,
@@ -23,7 +22,6 @@ export default function PPEDetector() {
     stopCamera,
   } = useCamera();
 
-  // 감지 훅
   const {
     isDetecting,
     isDetectingLoading,
@@ -33,7 +31,6 @@ export default function PPEDetector() {
     stopDetection,
   } = useDetection(videoRef, canvasRef, isStreaming);
 
-  // 각 클래스별 토글 상태
   const [enabledClasses, setEnabledClasses] = useState<Record<string, boolean>>(
     MODEL_CLASSES.reduce((acc, className) => {
       acc[className] = false;
@@ -41,7 +38,6 @@ export default function PPEDetector() {
     }, {} as Record<string, boolean>)
   );
 
-  // 클래스 토글 핸들러
   const toggleClass = useCallback((className: string) => {
     setEnabledClasses(prev => ({
       ...prev,
@@ -49,23 +45,19 @@ export default function PPEDetector() {
     }));
   }, []);
 
-  // 카메라 중지 시 감지도 중지
   const handleStopCamera = useCallback(() => {
     stopCamera();
     stopDetection();
   }, [stopCamera, stopDetection]);
 
-  // 컴포넌트 언마운트 시 정리
   useEffect(() => {
     return () => {
       handleStopCamera();
     };
   }, [handleStopCamera]);
 
-  // 페이지 로드 시 스크롤을 맨 위로 고정
   useEffect(() => {
     window.scrollTo(0, 0);
-    // 히스토리 API를 사용하여 스크롤 위치 저장 방지
     if ('scrollRestoration' in history) {
       history.scrollRestoration = 'manual';
     }
@@ -81,7 +73,6 @@ export default function PPEDetector() {
         </h1>
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* 왼쪽: 카메라 및 컨트롤 */}
           <div className="lg:col-span-2 space-y-4">
             <VideoCanvas
               videoRef={videoRef}
@@ -105,7 +96,6 @@ export default function PPEDetector() {
             <ErrorDisplay error={error} />
           </div>
 
-          {/* 오른쪽: 클래스 토글 및 감지 결과 */}
           <div className="space-y-4">
             <ClassTogglePanel
               enabledClasses={enabledClasses}

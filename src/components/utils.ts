@@ -1,13 +1,11 @@
-import { Detection } from './types';
 import { DEFAULT_KOREAN_LABELS } from './constants';
+import { Detection } from './types';
 
 export const getKoreanLabel = (className: string): string => {
   const normalizedClass = className.toLowerCase();
-  // 정확히 일치하는 경우
   if (DEFAULT_KOREAN_LABELS[normalizedClass]) {
     return DEFAULT_KOREAN_LABELS[normalizedClass];
   }
-  // 부분 일치하는 경우 찾기
   const matchedKey = Object.keys(DEFAULT_KOREAN_LABELS).find(key => 
     normalizedClass.includes(key) || key.includes(normalizedClass)
   );

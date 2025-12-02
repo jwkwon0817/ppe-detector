@@ -4,10 +4,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { tmpdir } from 'os';
 import { join } from 'path';
 
-// 동시 요청 제한을 위한 큐 관리
 const requestQueue: Array<() => void> = [];
 let activeRequests = 0;
-const MAX_CONCURRENT_REQUESTS = 2; // 최대 동시 요청 수
+const MAX_CONCURRENT_REQUESTS = 2;
 
 async function processRequest(
   pythonCmd: string,
@@ -39,10 +38,8 @@ async function processRequest(
       try {
         await unlink(tempFilePath);
       } catch {
-        // 파일 삭제 실패는 무시
       }
 
-      // 큐에 대기 중인 요청 처리
       if (requestQueue.length > 0 && activeRequests < MAX_CONCURRENT_REQUESTS) {
         const nextRequest = requestQueue.shift();
         if (nextRequest) {
@@ -84,10 +81,8 @@ async function processRequest(
       try {
         await unlink(tempFilePath);
       } catch {
-        // 파일 삭제 실패는 무시
       }
 
-      // 큐에 대기 중인 요청 처리
       if (requestQueue.length > 0 && activeRequests < MAX_CONCURRENT_REQUESTS) {
         const nextRequest = requestQueue.shift();
         if (nextRequest) {
@@ -128,7 +123,6 @@ export async function POST(request: NextRequest) {
     const modelPath = join(process.cwd(), 'public', 'last.pt');
     const pythonCmd = process.platform === 'win32' ? 'python' : 'python3';
 
-    // 동시 요청 수 제한
     if (activeRequests >= MAX_CONCURRENT_REQUESTS) {
       return new Promise<NextResponse>((resolve) => {
         requestQueue.push(() => {
